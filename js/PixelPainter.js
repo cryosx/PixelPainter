@@ -49,6 +49,13 @@ function PixelPainter(width, height) {
 
   function toggleFill() {
     fillState = !fillState;
+    if (fillState) {
+      this.style.background = 'black';
+      this.style.color = 'white';
+    } else {
+      this.style.background = 'white';
+      this.style.color = 'black';
+    }
   }
 
   function setupSwatchCells(swatch) {
@@ -75,7 +82,6 @@ function PixelPainter(width, height) {
         // console.log(arguments[0].path[1].classList[1]);
 
         if (fillState) {
-          console.log(arguments[0].path);
           fill(
             arguments[0].path[0].classList[2],
             arguments[0].path[1].classList[1]
@@ -97,19 +103,14 @@ function PixelPainter(width, height) {
     let colNum = Number.parseInt(col);
     let cells = document.querySelectorAll('div.gridCell');
     let targetColor = cells[getCellPosition(rowNum, colNum)].style.background;
-    console.log(targetColor);
-
-    // console.log(cells[1]);
-    // console.log(rowNum * _width + colNum);
-    console.log(cells[rowNum * _width + colNum]);
-    // console.log(cell + ' : ' + row);
-    fillHelper(cells, rowNum, colNum, targetColor);
+    if (cells[getCellPosition(rowNum, colNum)].style.background !== brush) {
+      fillHelper(cells, rowNum, colNum, targetColor);
+    }
   }
 
   function fillHelper(cells, row, col, targetColor) {
     // debugger;
-    console.log(targetColor);
-    console.log(cells[getCellPosition(row, col)]);
+
     if (
       getCellPosition(row, col) >= 0 &&
       getCellPosition(row, col) <= _height * _width - 1
