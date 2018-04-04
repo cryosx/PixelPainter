@@ -17,9 +17,39 @@
   border: 1px black solid;
   margin: 12px;
 }
+#clearButton {
+  height: 48px;
+  width: 48px;
+  border-radius: 100%;
+  margin: 12px;
+}
 
-.row {
-  /* display: inline; */
+#eraseButton {
+  height: 48px;
+  width: 48px;
+  border-radius: 100%;
+  margin: 12px;
+}
+
+#fillButton {
+  height: 48px;
+  width: 48px;
+  border-radius: 100%;
+  margin: 12px;
+}
+
+#eraseButton:focus {
+  outline: none;
+  box-shadow: 0px 0px 4px black;
+}
+#clearButton:focus {
+  outline: none;
+  box-shadow: 0px 0px 4px black;
+}
+
+#fillButton:focus {
+  outline: none;
+  box-shadow: 0px 0px 4px black;
 }
 
 .col {
@@ -36,4 +66,5 @@
   height: 24px;
   border: solid 1px black;
   margin: 1px;
+  /* background: white; */
 }
