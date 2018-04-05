@@ -2,8 +2,10 @@ function PixelPainter(width, height) {
   const _width = width;
   const _height = height;
   const defaultColor = 'white';
-  let brush = defaultColor;
+  const defaultBrushColor = 'black';
+  let brush = defaultBrushColor;
   let fillState = false;
+  let gridData = new Map();
 
   return {
     build: build,
@@ -15,6 +17,7 @@ function PixelPainter(width, height) {
 
     let selectColor = document.createElement('div');
     selectColor.id = 'selectColor';
+    selectColor.style.background = defaultBrushColor;
     canvas.appendChild(selectColor);
 
     let swatch = buildGrid('swatch', 'swatchCell', 8, 12);
@@ -33,10 +36,19 @@ function PixelPainter(width, height) {
       )
     );
     canvas.appendChild(createButton(toggleFill, 'fillButton', 'Fill'));
+    canvas.appendChild(createButton(saveData, 'saveButton', 'Save'));
 
     let grid = buildGrid('grid', 'gridCell', _width, _height);
     setupGridCells(grid);
     canvas.appendChild(grid);
+  }
+
+  function saveData() {
+    // let cells = document.querySelectorAll('div.gridCell');
+    // for (let i = 0; i < cells.length; i++) {
+    //   gridData.set(cells[i].style.background);
+    //   cells[i].style.background
+    // }
   }
 
   function createButton(func, id, text) {
@@ -75,30 +87,30 @@ function PixelPainter(width, height) {
     let cells = grid.querySelectorAll('div.gridCell');
     // console.log(cells);
     for (let i = 0; i < cells.length; i++) {
-      cells[i].addEventListener('click', function() {
+      cells[i].addEventListener('click', function(event) {
         // console.log(this.style.background);
         // console.log(arguments[0]);
+        // console.log(event.target.dataset.row);
+        console.log(event.target.dataset);
+
         // console.log(arguments[0].path[0].classList[2]);
         // console.log(arguments[0].path[1].classList[1]);
 
         if (fillState) {
-          fill(
-            arguments[0].path[0].classList[2],
-            arguments[0].path[1].classList[1]
-          );
+          fill(event.target.dataset.row, event.target.dataset.col);
         }
         cells[i].style.background = brush;
       });
       cells[i].addEventListener('mousemove', function() {
         // console.log(arguments[0]);
-        if (arguments[0].buttons === 1) {
+        if (event.buttons === 1) {
           cells[i].style.background = brush;
         }
       });
     }
   }
 
-  function fill(col, row) {
+  function fill(row, col) {
     let rowNum = Number.parseInt(row);
     let colNum = Number.parseInt(col);
     let cells = document.querySelectorAll('div.gridCell');
@@ -138,11 +150,15 @@ function PixelPainter(width, height) {
 
     for (let i = 0; i < gridHeight; i++) {
       let row = document.createElement('div');
-      row.className = 'row ' + i;
+      row.className = 'row';
+      row.dataset.row = i;
       for (let j = 0; j < gridWidth; j++) {
         let cell = document.createElement('div');
-        cell.className = cellName + ' col ' + j;
+        cell.className = cellName + ' col';
         cell.style.background = defaultColor;
+        cell.dataset.row = i;
+        cell.dataset.col = j;
+        cell.dataset.num = i * _width + j;
         row.appendChild(cell);
       }
       container.appendChild(row);
@@ -173,6 +189,6 @@ function PixelPainter(width, height) {
   }
 }
 
-let pp = PixelPainter(10, 10);
+let pp = PixelPainter(40, 40);
 pp.build();
 // document.body.style = 'background: #' + pp.getRandomHexColor();
