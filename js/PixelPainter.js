@@ -6,6 +6,8 @@ function PixelPainter(width, height) {
   let brush = defaultBrushColor;
   let fillState = false;
   let gridData = null;
+  let shareData = null;
+  let shareUrl = null;
 
   return {
     build: build,
@@ -15,20 +17,34 @@ function PixelPainter(width, height) {
   function build() {
     let canvas = document.getElementById('pixelPainter');
 
+    let swatchDiv = document.createElement('div');
+    swatchDiv.id = 'swatchContainer';
+    canvas.appendChild(swatchDiv);
+
     let selectColor = document.createElement('div');
     selectColor.id = 'selectColor';
     selectColor.style.background = defaultBrushColor;
-    canvas.appendChild(selectColor);
+    swatchDiv.appendChild(selectColor);
 
     let swatch = buildGrid('swatch', 'swatchCell', 8, 12);
     setupSwatchCells(swatch);
-    canvas.appendChild(swatch);
+    swatchDiv.appendChild(swatch);
+
+    let gridDiv = document.createElement('div');
+    gridDiv.id = 'gridContainer';
+    canvas.appendChild(gridDiv);
+
+    let grid = buildGrid('grid', 'gridCell', _width, _height);
+    setupGridCells(grid);
+    gridDiv.appendChild(grid);
 
     let buttonDiv = document.createElement('div');
     buttonDiv.id = 'buttons';
-    canvas.appendChild(buttonDiv);
+    gridDiv.appendChild(buttonDiv);
 
-    buttonDiv.appendChild(createButton(clearGrid, 'clearButton', 'Clear'));
+    buttonDiv.appendChild(
+      createButton(clearGrid, 'clearButton', 'button', 'Clear')
+    );
     buttonDiv.appendChild(
       createButton(
         function() {
@@ -36,28 +52,46 @@ function PixelPainter(width, height) {
           document.getElementById('selectColor').style.background = brush;
         },
         'eraseButton',
+        'button',
         'Erase'
       )
     );
-    buttonDiv.appendChild(createButton(toggleFill, 'fillButton', 'Fill'));
-    buttonDiv.appendChild(createButton(saveData, 'saveButton', 'Save'));
-    buttonDiv.appendChild(createButton(loadData, 'loadButton', 'Load'));
+    buttonDiv.appendChild(
+      createButton(toggleFill, 'fillButton', 'button', 'Fill')
+    );
+    buttonDiv.appendChild(
+      createButton(saveData, 'saveButton', 'button', 'Save')
+    );
+    buttonDiv.appendChild(
+      createButton(loadData, 'loadButton', 'button', 'Load')
+    );
+    // buttonDiv.appendChild(
+    //   createButton(share, 'shareButton', 'button', 'Share')
+    // );
 
-    let grid = buildGrid('grid', 'gridCell', _width, _height);
-    setupGridCells(grid);
-    canvas.appendChild(grid);
+    // let url = new URL(location);
+    // // console.log(url);
+
+    // if (url.searchParams.has('share')) {
+    //   shareData = url.searchParams.get('share');
+    //   loadShare(shareData);
+    // }
   }
 
-  function saveData() {
-    // let cells = document.querySelectorAll('div.gridCell');
-    // for (let i = 0; i < cells.length; i++) {
-    //   gridData.set(cells[i].style.background);
-    //   cells[i].style.background
-    // }
+  // function share() {
+  //   saveData();
+  //   console.log(JSON.stringify(Array.from(gridData.entries())));
+  //   shareData = btoa(JSON.stringify(Array.from(gridData.entries())));
+  //   console.log(shareData);
+  //   shareUrl = new URL(location);
+  //   shareUrl.searchParams.set('share', shareData);
+  //   console.log(shareUrl.href);
+  // }
+
+  function save() {
     gridData = new Map();
     let cells = document.querySelectorAll('div.gridCell');
     cells.forEach(function(elem) {
-      // console.log(elem.dataset);
       if (gridData.has(elem.style.background)) {
         gridData.get(elem.style.background).push({
           row: elem.dataset.row,
@@ -73,29 +107,40 @@ function PixelPainter(width, height) {
         });
       }
     });
-    console.log(gridData);
+  }
+
+  function saveData() {
+    save();
     localStorage.gridData = JSON.stringify(Array.from(gridData.entries()));
   }
 
   function loadData() {
     gridData = new Map(JSON.parse(localStorage.gridData));
-    console.log(gridData);
     let cells = document.querySelectorAll('div.gridCell');
-    console.log(gridData.entries());
     for (let entry of gridData.entries()) {
-      console.log(entry);
-      console.log(entry['0']);
-      console.log(entry['1']);
       entry['1'].forEach(function(elem) {
-        // console.log(elem);
         cells[elem.num].style.background = entry['0'];
       });
     }
   }
 
-  function createButton(func, id, text) {
+  // function loadShare(shareData) {
+  //   console.log(atob(shareData));
+  //   gridData = new Map(JSON.parse(atob(shareData)));
+  //   console.log(gridData);
+
+  //   let cells = document.querySelectorAll('div.gridCell');
+  //   for (let entry of gridData.entries()) {
+  //     entry['1'].forEach(function(elem) {
+  //       cells[elem.num].style.background = entry['0'];
+  //     });
+  //   }
+  // }
+
+  function createButton(func, id, className, text) {
     let btn = document.createElement('button');
     btn.id = id;
+    btn.className = className;
     btn.innerText = text;
     btn.addEventListener('click', func);
     return btn;
@@ -117,34 +162,22 @@ function PixelPainter(width, height) {
     for (let i = 0; i < cells.length; i++) {
       cells[i].style = 'background: #' + getRandomHexColor();
       cells[i].addEventListener('click', function() {
-        // console.log(this.style.background);
         brush = this.style.background;
         document.getElementById('selectColor').style.background = brush;
-        // console.log(brush);
       });
     }
   }
 
   function setupGridCells(grid) {
     let cells = grid.querySelectorAll('div.gridCell');
-    // console.log(cells);
     for (let i = 0; i < cells.length; i++) {
       cells[i].addEventListener('click', function(event) {
-        // console.log(this.style.background);
-        // console.log(arguments[0]);
-        // console.log(event.target.dataset.row);
-        // console.log(event.target.dataset);
-
-        // console.log(arguments[0].path[0].classList[2]);
-        // console.log(arguments[0].path[1].classList[1]);
-
         if (fillState) {
           fill(event.target.dataset.row, event.target.dataset.col);
         }
         cells[i].style.background = brush;
       });
       cells[i].addEventListener('mousemove', function() {
-        // console.log(arguments[0]);
         if (event.buttons === 1) {
           cells[i].style.background = brush;
         }

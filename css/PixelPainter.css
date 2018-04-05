@@ -1,5 +1,10 @@
 #pixelPainter {
   display: flex;
+  height: 100%;
+  padding: 0;
+  margin: 0;
+  align-items: flex-start;
+  justify-content: center;
 }
 
 #grid {
@@ -8,79 +13,67 @@
   border: 1px black solid;
 }
 
+/* #gridContainer {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  transition: 0.3s;
+  padding: 2px 16px;
+} */
+
 #swatch {
   margin: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
-#buttons {
-  display: flex;
-  flex-direction: column;
-}
-
-#selectColor {
-  width: 72px;
-  height: 24px;
-  border: 1px black solid;
-  margin: 12px;
-}
-#clearButton {
-  height: 48px;
-  width: 48px;
-  border-radius: 100%;
-  margin: 12px;
-}
-
-#eraseButton {
-  height: 48px;
-  width: 48px;
-  border-radius: 100%;
-  margin: 12px;
-}
-
-#fillButton {
-  height: 48px;
-  width: 48px;
-  border-radius: 100%;
-  margin: 12px;
-}
-
-#saveButton {
-  height: 48px;
-  width: 48px;
-  border-radius: 100%;
-  margin: 12px;
-}
-
-#loadButton {
-  height: 48px;
-  width: 48px;
-  border-radius: 100%;
-  margin: 12px;
-}
-
-#eraseButton:focus {
-  outline: none;
-  box-shadow: 0px 0px 4px black;
-}
-#clearButton:focus {
-  outline: none;
-  box-shadow: 0px 0px 4px black;
-}
-
-#fillButton:focus {
-  outline: none;
-  box-shadow: 0px 0px 4px black;
-}
-
-.col {
-  display: inline-block;
+#swatch:hover {
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
 }
 
 .swatchCell {
   width: 12px;
   height: 12px;
-  border: solid 0.5px black;
+  /* border: solid 0.5px black; */
 }
+
+#buttons {
+  display: flex;
+  flex-direction: row;
+}
+
+#selectColor {
+  width: auto;
+  height: 24px;
+  /* border: 1px black solid; */
+  margin: 12px;
+  border-radius: 30px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+#selectColor:hover {
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+}
+
+.button {
+  height: 48px;
+  width: 48px;
+  border-radius: 100%;
+  margin: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.button:hover {
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+}
+
+.button:focus {
+  outline: none;
+}
+.col {
+  display: inline-block;
+}
+
 .gridCell {
   width: 1vw;
   height: 1vw;
