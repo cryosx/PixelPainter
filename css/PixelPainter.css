@@ -12,6 +12,11 @@
   margin: 12px;
 }
 
+#buttons {
+  display: flex;
+  flex-direction: column;
+}
+
 #selectColor {
   width: 72px;
   height: 24px;
@@ -33,6 +38,20 @@
 }
 
 #fillButton {
+  height: 48px;
+  width: 48px;
+  border-radius: 100%;
+  margin: 12px;
+}
+
+#saveButton {
+  height: 48px;
+  width: 48px;
+  border-radius: 100%;
+  margin: 12px;
+}
+
+#loadButton {
   height: 48px;
   width: 48px;
   border-radius: 100%;

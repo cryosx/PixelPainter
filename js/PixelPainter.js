@@ -5,7 +5,7 @@ function PixelPainter(width, height) {
   const defaultBrushColor = 'black';
   let brush = defaultBrushColor;
   let fillState = false;
-  let gridData = new Map();
+  let gridData = null;
 
   return {
     build: build,
@@ -24,8 +24,12 @@ function PixelPainter(width, height) {
     setupSwatchCells(swatch);
     canvas.appendChild(swatch);
 
-    canvas.appendChild(createButton(clearGrid, 'clearButton', 'Clear'));
-    canvas.appendChild(
+    let buttonDiv = document.createElement('div');
+    buttonDiv.id = 'buttons';
+    canvas.appendChild(buttonDiv);
+
+    buttonDiv.appendChild(createButton(clearGrid, 'clearButton', 'Clear'));
+    buttonDiv.appendChild(
       createButton(
         function() {
           brush = defaultColor;
@@ -35,8 +39,9 @@ function PixelPainter(width, height) {
         'Erase'
       )
     );
-    canvas.appendChild(createButton(toggleFill, 'fillButton', 'Fill'));
-    canvas.appendChild(createButton(saveData, 'saveButton', 'Save'));
+    buttonDiv.appendChild(createButton(toggleFill, 'fillButton', 'Fill'));
+    buttonDiv.appendChild(createButton(saveData, 'saveButton', 'Save'));
+    buttonDiv.appendChild(createButton(loadData, 'loadButton', 'Load'));
 
     let grid = buildGrid('grid', 'gridCell', _width, _height);
     setupGridCells(grid);
@@ -49,6 +54,43 @@ function PixelPainter(width, height) {
     //   gridData.set(cells[i].style.background);
     //   cells[i].style.background
     // }
+    gridData = new Map();
+    let cells = document.querySelectorAll('div.gridCell');
+    cells.forEach(function(elem) {
+      // console.log(elem.dataset);
+      if (gridData.has(elem.style.background)) {
+        gridData.get(elem.style.background).push({
+          row: elem.dataset.row,
+          col: elem.dataset.col,
+          num: elem.dataset.num
+        });
+      } else {
+        gridData.set(elem.style.background, []);
+        gridData.get(elem.style.background).push({
+          row: elem.dataset.row,
+          col: elem.dataset.col,
+          num: elem.dataset.num
+        });
+      }
+    });
+    console.log(gridData);
+    localStorage.gridData = JSON.stringify(Array.from(gridData.entries()));
+  }
+
+  function loadData() {
+    gridData = new Map(JSON.parse(localStorage.gridData));
+    console.log(gridData);
+    let cells = document.querySelectorAll('div.gridCell');
+    console.log(gridData.entries());
+    for (let entry of gridData.entries()) {
+      console.log(entry);
+      console.log(entry['0']);
+      console.log(entry['1']);
+      entry['1'].forEach(function(elem) {
+        // console.log(elem);
+        cells[elem.num].style.background = entry['0'];
+      });
+    }
   }
 
   function createButton(func, id, text) {
@@ -91,7 +133,7 @@ function PixelPainter(width, height) {
         // console.log(this.style.background);
         // console.log(arguments[0]);
         // console.log(event.target.dataset.row);
-        console.log(event.target.dataset);
+        // console.log(event.target.dataset);
 
         // console.log(arguments[0].path[0].classList[2]);
         // console.log(arguments[0].path[1].classList[1]);
